@@ -43,3 +43,24 @@ jkozik@ubuntu22179:~$ cp authorized_keys /home/jkozik/.ssh && chmod 600 authoriz
 jkozik@ubuntu22179:~$ chown -R jkozik:jkozik /home/jkozik/.ssh
 ```
 Then update on my windows PC /users/jackk/.ssh/config file to point to the new VM's IP address.  Verify that ssh to the new VM works.
+
+# Setup Container Environment
+## Docker
+The Ubuntu install doesn't install the latest version of docker, thus install the latest and enable jkozik to run it without sudo
+```
+apt update
+apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt update
+apt-cache policy docker-ce
+apt install docker-ce
+systemctl status docker
+usermod -aG docker jkozik
+```
+Login as jkozik and verify groups and docker ps
+References
+-[Digitial Ocean Tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04)
+
+## Docker Compose
+
