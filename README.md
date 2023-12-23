@@ -44,6 +44,12 @@ jkozik@ubuntu22179:~$ chown -R jkozik:jkozik /home/jkozik/.ssh
 ```
 Then update on my windows PC /users/jackk/.ssh/config file to point to the new VM's IP address.  Verify that ssh to the new VM works.
 
+It is worth noting that you can setup jump servers:
+```
+PS C:\Users\jackk> ssh -J jkozik@dell1.kozik.net jkozik@192.168.100.179
+```
+See  [jumpserver](https://wiki.gentoo.org/wiki/SSH_jump_host) reference.
+
 # Setup Container Environment
 ## Docker
 The Ubuntu install doesn't install the latest version of docker, thus install the latest and enable jkozik to run it without sudo
@@ -57,10 +63,52 @@ apt-cache policy docker-ce
 apt install docker-ce
 systemctl status docker
 usermod -aG docker jkozik
+docker run hello-world
 ```
-Login as jkozik and verify groups and docker ps
+Login as jkozik and verify groups and docker ps.
+
 References
 -[Digitial Ocean Tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04)
 
 ## Docker Compose
+A good way to further verify docker is to install docker compose and test it.
+```
+mkdir -p ~/.docker/cli-plugins/
+curl -SL https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+chmod +x ~/.docker/cli-plugins/docker-compose
+docker compose version
+mkdir ~/compose-demo
 
+cd ~/compose-demo
+mkdir app
+nano app/index.html
+nano docker-compose.yml
+docker compose up -d
+```
+Get the content from the [Digital Ocean setup instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-22-04)
+
+## Setup Git
+```
+sudo apt update
+sudo apt install git
+git --version
+git config --global user.name "Jack Kozik"
+git config --global user.email "jackkozik@email.com"
+git config --list
+```
+Reference: [Digital Ocean setup git](https://www.digitalocean.com/community/tutorials/how-to-install-git-on-ubuntu-22-04)
+
+## Firewall notes
+The firewall appears to be off by default. It uses the ufw command, new to me.  See the reference.
+```
+jkozik@ubuntu22179:~$ sudo su
+root@ubuntu22179:/home/jkozik# ufw app list
+Available applications:
+  OpenSSH
+root@ubuntu22179:/home/jkozik# ufw status
+Status: inactive
+root@ubuntu22179:/home/jkozik#
+```
+Reference: [Digital Ocean setup](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-22-04)
+
+Another reference, [Server World for Ubuntu 22](https://www.server-world.info/en/note?os=Ubuntu_22.04&p=initial_conf&f=3)https://www.server-world.info/en/note?os=Ubuntu_22.04&p=initial_conf&f=3t)
