@@ -98,6 +98,87 @@ git config --list
 ```
 Reference: [Digital Ocean setup git](https://www.digitalocean.com/community/tutorials/how-to-install-git-on-ubuntu-22-04)
 
+## NFS Client
+For Kubernetes Nodes, I use PV,PVCs linked to NFS mounts.  Each Worker node needs to have an NFS client installed
+```
+root@knode203:~# apt install nfs-common
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  keyutils libnfsidmap1 rpcbind
+Suggested packages:
+  watchdog
+The following NEW packages will be installed:
+  keyutils libnfsidmap1 nfs-common rpcbind
+0 upgraded, 4 newly installed, 0 to remove and 88 not upgraded.
+Need to get 381 kB of archives.
+After this operation, 1,447 kB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+Get:1 http://us.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libnfsidmap1 amd64 1:2.6.1-1ubuntu1.2 [42.9 kB]
+Get:2 http://us.archive.ubuntu.com/ubuntu jammy/main amd64 rpcbind amd64 1.2.6-2build1 [46.6 kB]
+Get:3 http://us.archive.ubuntu.com/ubuntu jammy/main amd64 keyutils amd64 1.6.1-2ubuntu3 [50.4 kB]
+Get:4 http://us.archive.ubuntu.com/ubuntu jammy-updates/main amd64 nfs-common amd64 1:2.6.1-1ubuntu1.2 [241 kB]
+Fetched 381 kB in 0s (955 kB/s)
+Selecting previously unselected package libnfsidmap1:amd64.
+(Reading database ... 110255 files and directories currently installed.)
+Preparing to unpack .../libnfsidmap1_1%3a2.6.1-1ubuntu1.2_amd64.deb ...
+Unpacking libnfsidmap1:amd64 (1:2.6.1-1ubuntu1.2) ...
+Selecting previously unselected package rpcbind.
+Preparing to unpack .../rpcbind_1.2.6-2build1_amd64.deb ...
+Unpacking rpcbind (1.2.6-2build1) ...
+Selecting previously unselected package keyutils.
+Preparing to unpack .../keyutils_1.6.1-2ubuntu3_amd64.deb ...
+Unpacking keyutils (1.6.1-2ubuntu3) ...
+Selecting previously unselected package nfs-common.
+Preparing to unpack .../nfs-common_1%3a2.6.1-1ubuntu1.2_amd64.deb ...
+Unpacking nfs-common (1:2.6.1-1ubuntu1.2) ...
+Setting up libnfsidmap1:amd64 (1:2.6.1-1ubuntu1.2) ...
+Setting up rpcbind (1.2.6-2build1) ...
+invoke-rc.d: policy-rc.d denied execution of start.
+Created symlink /etc/systemd/system/multi-user.target.wants/rpcbind.service → /lib/systemd/system/rpcbind.service.
+Created symlink /etc/systemd/system/sockets.target.wants/rpcbind.socket → /lib/systemd/system/rpcbind.socket.
+/usr/sbin/policy-rc.d returned 101, not running 'start rpcbind.service rpcbind.socket'
+Setting up keyutils (1.6.1-2ubuntu3) ...
+Setting up nfs-common (1:2.6.1-1ubuntu1.2) ...
+
+Creating config file /etc/idmapd.conf with new version
+
+Creating config file /etc/nfs.conf with new version
+Adding system user `statd' (UID 115) ...
+Adding new user `statd' (UID 115) with group `nogroup' ...
+Not creating home directory `/var/lib/nfs'.
+invoke-rc.d: policy-rc.d denied execution of start.
+Created symlink /etc/systemd/system/multi-user.target.wants/nfs-client.target → /lib/systemd/system/nfs-client.target.
+Created symlink /etc/systemd/system/remote-fs.target.wants/nfs-client.target → /lib/systemd/system/nfs-client.target.
+/usr/sbin/policy-rc.d returned 101, not running 'start auth-rpcgss-module.service nfs-client.target nfs-idmapd.service nfs-utils.service proc-fs-nfsd.mount rpc-gssd.service rpc-statd-notify.service rpc-statd.service rpc-svcgssd.service rpc_pipefs.target var-lib-nfs-rpc_pipefs.mount'
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.8) ...
+Scanning processes...
+Scanning candidates...
+Scanning linux images...
+
+Restarting services...
+ /etc/needrestart/restart.d/systemd-manager
+ systemctl restart irqbalance.service packagekit.service polkit.service ssh.service systemd-journald.service systemd-networkd.service systemd-resolved.service systemd-timesyncd.service systemd-udevd.service udisks2.service upower.service
+Service restarts being deferred:
+ systemctl restart ModemManager.service
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart networkd-dispatcher.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+ systemctl restart user@1000.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+root@knode203:~# 
+```
+- [How to Install NFS Server and Client on Ubuntu 22.04](https://www.tecmint.com/install-nfs-server-on-ubuntu/#:~:text=Install%20the%20NFS%20Client%20on%20the%20Client%20Systems)
+
+
 ## Firewall notes
 The firewall appears to be off by default. It uses the ufw command, new to me.  See the reference.
 ```
